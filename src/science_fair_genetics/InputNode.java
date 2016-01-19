@@ -1,5 +1,8 @@
 package science_fair_genetics;
 
+/**
+ * Returns the input when evaluated
+ */
 public class InputNode extends AbstractNode {
 
 	protected InputNode(Node parent) {
@@ -14,7 +17,7 @@ public class InputNode extends AbstractNode {
 	}
 	
 	@Override
-	public double parse(double input) {
+	public double evaluate(double input) {
 		return input;
 	}
 

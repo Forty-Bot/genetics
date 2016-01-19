@@ -1,5 +1,8 @@
 package science_fair_genetics;
 
+/**
+ * Implements adjusted fitness to reduce load implementing Fitter
+ */
 public abstract class AbstractFitter implements Fitter {
 
 	@Override

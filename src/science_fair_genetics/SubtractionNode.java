@@ -1,5 +1,9 @@
 package science_fair_genetics;
 
+/**
+ * Subtracts the value of one of its children from the other when
+ * {@link Node#evaluate}d.
+ */
 public class SubtractionNode extends AbstractNode {
 
 	protected SubtractionNode(Node parent) {
@@ -10,8 +14,8 @@ public class SubtractionNode extends AbstractNode {
 	}
 	
 	@Override
-	public double parse(double input) {
-		return children[0].parse(input) - children[1].parse(input);
+	public double evaluate(double input) {
+		return children[0].evaluate(input) - children[1].evaluate(input);
 	}
 
 }

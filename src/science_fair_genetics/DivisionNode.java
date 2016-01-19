@@ -1,5 +1,8 @@
 package science_fair_genetics;
 
+/**
+ * Divides one of its children by the other
+ */
 public class DivisionNode extends AbstractNode {
 
 	protected DivisionNode(Node parent) {
@@ -10,9 +13,9 @@ public class DivisionNode extends AbstractNode {
 	}
 	
 	@Override
-	public double parse(double input) {
-		double rval = children[1].parse(input);
-		return rval == 0 ? 0 : children[0].parse(input) / rval;
+	public double evaluate(double input) {
+		double rval = children[1].evaluate(input);
+		return rval == 0 ? 0 : children[0].evaluate(input) / rval;
 	}
 
 }

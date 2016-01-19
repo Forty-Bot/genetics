@@ -1,9 +1,17 @@
 package science_fair_genetics;
 
+/**
+ * Returns the same constant every time it is parsed.
+ */
 public class ConstantNode extends AbstractNode {
 
 	private final double value;
 	
+	/**
+	 * Creates a new {@link ConstantNode}.
+	 * @param parent The parent node
+	 * @param value The value of the constant to be used.
+	 */
 	protected ConstantNode(Node parent, double value) {
 		super(parent);
 		type = NodeType.TERMINATOR;
@@ -38,7 +46,7 @@ public class ConstantNode extends AbstractNode {
 	}
 	
 	@Override
-	public double parse(double input) {
+	public double evaluate(double input) {
 		return value;
 	}
 

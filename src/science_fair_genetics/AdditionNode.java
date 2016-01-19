@@ -1,5 +1,8 @@
 package science_fair_genetics;
 
+/**
+ * Adds its two children together.
+ */
 public class AdditionNode extends AbstractNode {
 
 	protected AdditionNode(Node parent) {
@@ -10,8 +13,8 @@ public class AdditionNode extends AbstractNode {
 	}
 	
 	@Override
-	public double parse(double input) {
-		return children[0].parse(input) + children[1].parse(input);
+	public double evaluate(double input) {
+		return children[0].evaluate(input) + children[1].evaluate(input);
 	}
 
 }

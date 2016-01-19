@@ -15,24 +15,35 @@ public class Population {
 	private HashSet<Program> population;
 	private Fitter[] fitters;
 	
+	/**
+	 * Creates a new population of programs which may be operated on with the
+	 * given {@link Fitter}s to determine fitness. Programs are created by
+	 * running {@link NodeFactory#generateFull} and {@link NodeFactory#generateGrow}
+	 * in equal parts for each depth between {@code startingDepth} and {@code maxDepth}. 
+	 * @param fitters An array with fitters to evaluate the generated programs with.
+	 * @param size The amount of programs to generate.
+	 * @param maxDepth The maximum depth of the @{link Node} tree.
+	 * @param startingDepth The initial maximum depth used when generating programs.
+	 */
 	public Population(Fitter[] fitters, int size, int maxDepth,
-			int minDepth) {
+			int startingDepth) {
 		population = new HashSet<Program>(size);
 		this.fitters = fitters;
 		
 		// The amount of times we run each generator for each depth
-		int group_size = size/(2*(maxDepth - minDepth + 1));
+		int group_size = size/(2*(maxDepth - startingDepth + 1));
 		boolean usingFull = false;
-		int depth = minDepth - 1;
+		int depth = startingDepth - 1;
 		// Fill the population with programs, half full and half grown, at varying depths
 		for(int i = 0; i < size; i++) {
 			if(i % group_size == 0 && depth != maxDepth){
 				depth++;
 				usingFull = !usingFull;
 			}
-			population.add(new Program(new double[fitters.length], 
+			// Create new programs until we get an unique one
+			while(!population.add(new Program(new double[fitters.length], 
 					usingFull ? NodeFactory.generateFull(null, depth) :
-					NodeFactory.generateGrow(null, depth)));
+					NodeFactory.generateGrow(null, depth))));
 		}
 	}
 	
@@ -48,6 +59,10 @@ public class Population {
 		this(fitters, DEFAULT_SIZE);
 	}
 	
+	/**
+	 * Gets an {@code amount} of programs randomly from the {@link Population}. 
+	 * @param amount The amount of programs to retrieve.
+	 */
 	public Program[] getRandomPrograms(int amount) {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
 		
@@ -100,6 +115,10 @@ public class Population {
 		return nonDominated.toArray(new Program[nonDominated.size()]);
 	}
 	
+	/**
+	 * Fit a program using the {@link Population}'s fitters.
+	 * @param p The program to be fitted
+	 */
 	public void fit(Program p) {
 		for(int i = 0; i < fitters.length; i++) {
 			p.fitness[i] = fitters[i].getAdjustedFitness(p.node);

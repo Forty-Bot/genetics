@@ -1,5 +1,9 @@
 package science_fair_genetics;
 
+/**
+ * Part of a tree which represents an algebraic function in the form of 
+ * {@literal y=f(x)}.
+ */
 public interface Node {
 	
 	public NodeType getType();
@@ -13,6 +17,11 @@ public interface Node {
 	 */
 	public void invalidate();
 	
-	public double parse(double input);
+	/**
+	 * Apply the function of the node recursively onto its children with
+	 * the given input.
+	 * @param input The input to the function; may be thought of as 'x'.
+	 */
+	public double evaluate(double input);
 
 }

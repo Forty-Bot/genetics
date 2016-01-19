@@ -1,5 +1,8 @@
 package science_fair_genetics;
 
+/**
+ * Determines the fitness of a {@link Node} by find its size.
+ */
 public class SizeFitter extends AbstractFitter {
 
 	@Override
