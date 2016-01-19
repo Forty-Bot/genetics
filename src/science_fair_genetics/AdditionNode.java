@@ -2,9 +2,11 @@ package science_fair_genetics;
 
 public class AdditionNode extends AbstractNode {
 
-	protected AdditionNode() {
+	protected AdditionNode(Node parent) {
+		super(parent);
 		type = NodeType.FUNCTION;
 		children = new Node[2];
+		operator = "+";
 	}
 	
 	@Override

@@ -2,9 +2,11 @@ package science_fair_genetics;
 
 public class SubtractionNode extends AbstractNode {
 
-	protected SubtractionNode() {
+	protected SubtractionNode(Node parent) {
+		super(parent);
 		type = NodeType.FUNCTION;
 		children = new Node[2];
+		operator = "-";
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package science_fair_genetics;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -11,47 +12,28 @@ public class Population {
 	public static final int DEFAULT_MIN_DEPTH = 4;
 	public static final int DEFAULT_TOURNAMENT_SIZE = 16;
 	
-	public class Program {
-		public double fitness[];
-		public Node node;
-		public boolean fitted = false;
-		public Program(double fitness[], Node node) {
-			this.fitness = fitness;
-			this.node = node;
-		}
-	}
-	
-	private ArrayList<Program> population;
+	private HashSet<Program> population;
 	private Fitter[] fitters;
-	private int tournamentSize;
 	
-	/*
-	 * Uses ramped half-and-half generation
-	 */
 	public Population(Fitter[] fitters, int size, int maxDepth,
-			int minDepth, int tournamentSize) {
-		population = new ArrayList<Program>(size);
+			int minDepth) {
+		population = new HashSet<Program>(size);
 		this.fitters = fitters;
-		this.tournamentSize = tournamentSize;
 		
 		// The amount of times we run each generator for each depth
 		int group_size = size/(2*(maxDepth - minDepth + 1));
 		boolean usingFull = false;
 		int depth = minDepth - 1;
+		// Fill the population with programs, half full and half grown, at varying depths
 		for(int i = 0; i < size; i++) {
 			if(i % group_size == 0 && depth != maxDepth){
 				depth++;
 				usingFull = !usingFull;
 			}
-			population.add(i, new Program(new double[fitters.length], 
-					usingFull ? NodeFactory.generateFull(depth) :
-					NodeFactory.generateGrow(depth)));
+			population.add(new Program(new double[fitters.length], 
+					usingFull ? NodeFactory.generateFull(null, depth) :
+					NodeFactory.generateGrow(null, depth)));
 		}
-	}
-	
-	public Population(Fitter[] fitters, int size, int maxDepth,
-			int minDepth) {
-		this(fitters, size, maxDepth, minDepth, DEFAULT_TOURNAMENT_SIZE);
 	}
 	
 	public Population(Fitter[] fitters, int size, int maxDepth) {
@@ -66,27 +48,33 @@ public class Population {
 		this(fitters, DEFAULT_SIZE);
 	}
 	
-	public Program[] tournament(int tournamentSize) {
+	public Program[] getRandomPrograms(int amount) {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
 		
-		// Get some contestants using Knuth's shuffling algorithm
-		for(int i = 0; i < tournamentSize; i++) {
-			int pos = i + random.nextInt(population.size() - i);
-			Program tmp = population.get(pos);
-			population.set(pos, population.get(i));
-			population.set(i, tmp);
+		Program[] selected = new Program[amount];
+		int seen = 0;
+		for(Program p: population) {
+			seen++;
+			// Fill the first amount items in the array with programs, then randomly select programs
+			int index = seen > amount ? random.nextInt(seen) : seen - 1;
+			if(index < amount) {
+				selected[index] = p;
+			}
 		}
-		ArrayList<Program> contestants = 
-				new ArrayList<Program>(population.subList(0,
-				tournamentSize));
-		
-		// Find the Pareto frontier
+		return selected;
+	}	
+	
+	/**
+	 * Runs a tournament to find the nondominated programs (Pareto Frontier).
+	 */
+	public Program[] tournament(Program[] contestants) {
 		ArrayList<Program> nonDominated = new ArrayList<Program>();
 		outer:
 		for(Program p: contestants) {
 			if(!p.fitted) {
 				fit(p);
 			}
+			//Use an iterator so we can remove dominated programs from nonDominated
 			for(Iterator<Program> i = nonDominated.iterator(); i.hasNext();) {
 				boolean pdominated = true;
 				boolean qdominated = true;
@@ -110,10 +98,6 @@ public class Population {
 			nonDominated.add(p);
 		}
 		return nonDominated.toArray(new Program[nonDominated.size()]);
-	}
-	
-	public Program[] tournament() {
-		return tournament(this.tournamentSize);
 	}
 	
 	public void fit(Program p) {

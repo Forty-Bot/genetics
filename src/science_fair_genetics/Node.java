@@ -1,9 +1,5 @@
 package science_fair_genetics;
 
-/**
- * @author sean
- *
- */
 public interface Node {
 	
 	public NodeType getType();
@@ -11,6 +7,11 @@ public interface Node {
 	public void setChildNode(int i, Node node);
 	public Node getChildNode(int i);
 	public Node[] getChildNodes();
+	
+	/**
+	 * Invalidate cached hash values
+	 */
+	public void invalidate();
 	
 	public double parse(double input);
 
