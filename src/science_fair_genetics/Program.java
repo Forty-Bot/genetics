@@ -35,4 +35,21 @@ public class Program {
 	public int hashCode() {
 		return node.hashCode();
 	}
+
+	/**
+	 * Fit a program using the {@link Population}'s fitters.
+	 * @param p The program to be fitted
+	 */
+	public void fit(Fitter[] fitters) {
+		if(fitness.length != fitters.length) {
+			throw new IllegalArgumentException("The length of our internal "
+					+ "fitness array is " + fitness.length + " but the "
+					+ "length of the fitters we are to be fitted to is "
+					+ fitters.length + ".");
+		}
+		for(int i = 0; i < fitters.length; i++) {
+			fitness[i] = fitters[i].getAdjustedFitness(node);
+		}
+		fitted = true;
+	}
 }

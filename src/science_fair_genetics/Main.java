@@ -26,13 +26,13 @@ public class Main {
 		reader.close();
 		
 		Fitter[] fitters = {new SizeFitter(), new DataFitter(data)};
-		Population p = new Population(fitters);
+		Population p = new Population(Population.generatePopulation(fitters, 512));
 		for(int i = 0; i < 20; i++) {
-			Program[] nonDominated = p.tournament(p.getRandomPrograms(16));
+			Program[] nonDominated = Population.tournament(p.getRandomPrograms(16), fitters);
 			System.out.println("Tournament "+i+":");
 			for(Program prog: nonDominated) {
-				int hash = prog.hashCode();
-				System.out.println("\t"+hash+"\t"+prog.node.toString());
+				System.out.println("\t" + java.util.Arrays.toString(prog.fitness)
+				+ "\t" + prog.node.toString());
 			}
 		}
 	}
