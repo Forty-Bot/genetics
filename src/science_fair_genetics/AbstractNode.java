@@ -1,5 +1,10 @@
 package science_fair_genetics;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Implements a few common functions for Nodes.
  * Subclasses will need to:
@@ -63,6 +68,21 @@ public abstract class AbstractNode implements Node {
 	}
 	
 	@Override
+	public Node clone() {
+		Node clone;
+		try {
+			clone = this.getClass().getConstructor(this.getClass()).newInstance(this.parent);
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
+			// This should not happen
+			throw new RuntimeException(e);
+		}
+		for(int i = 0; i < children.length; i++) {
+			clone.setChildNode(i, ((AbstractNode )children[i]).clone());
+		}
+		return clone;
+	}
+	
+	@Override
 	public void invalidate() {
 		valid = false;
 		if(parent != null) {
@@ -106,5 +126,40 @@ public abstract class AbstractNode implements Node {
 	public Node[] getChildNodes() {
 		return children;
 	}
+	
+	@Override
+	public Node getParent() {
+		return parent;
+	}
+	
+	public Node randomChild() {
+		ThreadLocalRandom random = ThreadLocalRandom.current();
+		
+		int seen = 1;
+		Node selected = this;
+		LinkedList<Node> queue = new LinkedList<Node>();
+		queue.add(this);
+		
+		for(Iterator<Node>  i = queue.iterator(); i.hasNext();) {
+			Node current = i.next();
+			seen++;
+			
+			selected = random.nextInt(seen) == 1 ? current : selected;
+			for(Node child: current.getChildNodes()) {
+				queue.add(child);
+			}
+		}
+		return selected;
+	}
+	
+	protected Node getLeftmost() {
+		Node selected = this;
+		while(selected.numChildNodes() >= 2) {
+			selected = selected.getChildNode(0);
+		}
+		return selected;
+	}
+	
+	
 
 }

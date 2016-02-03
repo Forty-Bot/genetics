@@ -31,7 +31,7 @@ public abstract class NodeFactory {
 	 */
 	public static Node getFunction(Node parent) {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
-		switch(random.nextInt(4)) {
+		switch(random.nextInt(5)) {
 		case 0:
 			return new AdditionNode(parent);
 		case 1:
@@ -40,6 +40,8 @@ public abstract class NodeFactory {
 			return new MultiplicationNode(parent);
 		case 3:
 			return new DivisionNode(parent);
+		case 4:
+			return new PowerNode(parent);
 		default:
 			throw new RuntimeException("This should never happen.");
 		}
