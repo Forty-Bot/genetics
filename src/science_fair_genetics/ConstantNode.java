@@ -41,6 +41,16 @@ public class ConstantNode extends AbstractNode {
 	}
 	
 	@Override
+	public ConstantNode clone() throws CloneNotSupportedException {
+		ConstantNode clone;
+		clone = new ConstantNode(parent, value);
+		for(int i = 0; i < children.length; i++) {
+			clone.setChildNode(i, ((AbstractNode) children[i]).clone());
+		}
+		return clone;
+	}
+	
+	@Override
 	public String toString() {
 		return Double.toString(value);
 	}

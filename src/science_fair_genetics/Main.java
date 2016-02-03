@@ -11,7 +11,8 @@ import java.util.TreeMap;
 public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException,
-	IOException {
+	IOException, CloneNotSupportedException {
+		
 		BufferedReader reader =
 				new BufferedReader(new FileReader(
 				new File("/home/sean/school/12/phys/gamma.csv")));

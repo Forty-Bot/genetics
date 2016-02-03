@@ -1,8 +1,7 @@
 package science_fair_genetics;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -68,16 +67,16 @@ public abstract class AbstractNode implements Node {
 	}
 	
 	@Override
-	public Node clone() {
+	public Node clone() throws CloneNotSupportedException {
 		Node clone;
 		try {
-			clone = this.getClass().getConstructor(this.getClass()).newInstance(this.parent);
+			clone = getClass().getDeclaredConstructor(Node.class).newInstance(parent);
 		} catch (InvocationTargetException | InstantiationException | IllegalAccessException | IllegalArgumentException | NoSuchMethodException | SecurityException e) {
-			// This should not happen
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 		for(int i = 0; i < children.length; i++) {
-			clone.setChildNode(i, ((AbstractNode )children[i]).clone());
+			clone.setChildNode(i, ((AbstractNode) children[i]).clone());
 		}
 		return clone;
 	}
@@ -137,13 +136,11 @@ public abstract class AbstractNode implements Node {
 		
 		int seen = 1;
 		Node selected = this;
-		LinkedList<Node> queue = new LinkedList<Node>();
+		LinkedBlockingQueue<Node> queue = new LinkedBlockingQueue<Node>();
 		queue.add(this);
 		
-		for(Iterator<Node>  i = queue.iterator(); i.hasNext();) {
-			Node current = i.next();
+		for(Node current = queue.poll(); current != null; current = queue.poll()) {
 			seen++;
-			
 			selected = random.nextInt(seen) == 1 ? current : selected;
 			for(Node child: current.getChildNodes()) {
 				queue.add(child);

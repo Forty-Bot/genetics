@@ -12,6 +12,9 @@ public interface Node extends Cloneable {
 	public Node getChildNode(int i);
 	public Node[] getChildNodes();
 	public Node getParent();
+	public Node randomChild();
+	
+	public Node clone() throws CloneNotSupportedException;	
 	
 	/**
 	 * Invalidate cached hash values
@@ -24,5 +27,5 @@ public interface Node extends Cloneable {
 	 * @param input The input to the function; may be thought of as 'x'.
 	 */
 	public double evaluate(double input);
-
+	
 }
